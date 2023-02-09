@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FPII23_P1_Naves
@@ -13,9 +14,12 @@ namespace FPII23_P1_Naves
     {
         static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         const bool DEBUG = true; // para sacar información adicional en el Render
-        const int ANCHO = 27, ALTO = 15,  // área de juego
+        const int ANCHO = 5, 
+                  ALTO = 5,  // área de juego
                   MAX_BALAS = 5, 
                   MAX_ENEMIGOS = 9;
+
+        // Evitar Console.Clear en Windows
 
         struct Tunel
         {
@@ -37,18 +41,22 @@ namespace FPII23_P1_Naves
         static void IniciaTunel(out Tunel tunel)
         {
             // creamos arrays
-            tunel.suelo = new int[ANCHO];
-            tunel.techo = new int[ANCHO];
+            //tunel.suelo = new int[ANCHO];
+            //tunel.techo = new int[ANCHO];
+
+            tunel.ini = 0;
+            tunel.techo = new int[] { 1, 1, 2, 1, 0 };
+            tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
 
             // rellenamos posicion 0 como semilla para generar el resto
-            tunel.techo[0] = 0;
-            tunel.suelo[0] = ALTO - 1;
+            //tunel.techo[0] = 0;
+            //tunel.suelo[0] = ALTO - 1;
 
             // dejamos 0 como la última y avanzamos hasta dar la vuelta
-            tunel.ini = 1;
+            //tunel.ini = 1;
             for (int i = 1; i < ANCHO; i++)
             {
-                AvanzaTunel(ref tunel);
+                //AvanzaTunel(ref tunel);
             }
             // al dar la vuelta y quedará tunel.ini=0    
         }
@@ -99,9 +107,56 @@ namespace FPII23_P1_Naves
             return ch;
         }
 
+        static void RenderTunel(Tunel tunel)
+        {
+            Console.SetCursorPosition(0, 0);
+            if (DEBUG)
+            {
+                Console.WriteLine(string.Join(" ", tunel.techo));
+            }
+            //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
+
+            for (int j = 0; j < ALTO; j++)
+            {
+                for (int i = 0; i < ANCHO; i++)
+                {
+                    if (j >= tunel.suelo[tunel.ini] || j <= tunel.techo[tunel.ini])
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    }
+                    
+                    Console.Write("  ");
+
+                }
+                Console.WriteLine();
+            }
+
+            //DEBUG ↓ ↓ ↓ ↓ ↓ ↓ ↓ 
+            Console.BackgroundColor = ConsoleColor.Black;
+            if (DEBUG)
+            {
+                Console.WriteLine("\n" +string.Join(" ", tunel.suelo));
+                Console.WriteLine("ini: " + tunel.ini);
+            }
+        }
+
         static void Main(string[] args)
         {
-
+            IniciaTunel(out Tunel tunel);
+            RenderTunel(tunel);
+            while (true) ;
+            /*
+            while (DEBUG)
+            {
+                AvanzaTunel(ref tunel);
+                RenderTunel(tunel);
+                Thread.Sleep(200);
+            }
+            */
         }
     }
 }
