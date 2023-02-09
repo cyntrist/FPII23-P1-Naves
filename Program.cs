@@ -13,7 +13,7 @@ namespace FPII23_P1_Naves
     internal class Program
     {
         static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
-        const bool DEBUG = true; // para sacar información adicional en el Render
+        const bool DEBUG = false; // para sacar información adicional en el Render
         const int ANCHO = 5, 
                   ALTO = 5,  // área de juego
                   MAX_BALAS = 5, 
@@ -115,7 +115,7 @@ namespace FPII23_P1_Naves
                 Console.WriteLine(string.Join(" ", tunel.techo));
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
-
+            /*
             for (int j = 0; j < ALTO; j++)
             {
                 for (int i = 0; i < ANCHO; i++)
@@ -133,6 +133,16 @@ namespace FPII23_P1_Naves
 
                 }
                 Console.WriteLine();
+            }
+            */
+
+            for (int i = 0; i < ANCHO; i++)
+            {
+                for (int j = 0; j < ALTO; j++)
+                {
+                    Console.SetCursorPosition(j * 2, i * 2);
+                    Console.Write(" x");
+                }
             }
 
             //DEBUG ↓ ↓ ↓ ↓ ↓ ↓ ↓ 
