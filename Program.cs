@@ -9,8 +9,8 @@ namespace FPII23_P1_Naves
     {
         static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         const bool DEBUG = true; // para sacar información adicional en el Render
-        const int ANCHO = 5,
-                  ALTO = 5,  // área de juego
+        const int ANCHO = 20,
+                  ALTO = 16,  // área de juego
                   MAX_BALAS = 5,
                   MAX_ENEMIGOS = 9;
 
@@ -36,22 +36,22 @@ namespace FPII23_P1_Naves
         static void IniciaTunel(out Tunel tunel)
         {
             // creamos arrays
-            //tunel.suelo = new int[ANCHO];
-            //tunel.techo = new int[ANCHO];
+            tunel.suelo = new int[ANCHO];
+            tunel.techo = new int[ANCHO];
 
-            tunel.ini = 4;
-            tunel.techo = new int[] { 1, 1, 2, 1, 0 };
-            tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
+            //tunel.ini = 4;
+            //tunel.techo = new int[] { 1, 1, 2, 1, 0 };
+            //1tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
 
             // rellenamos posicion 0 como semilla para generar el resto
-            //tunel.techo[0] = 0;
-            //tunel.suelo[0] = ALTO - 1;
+            tunel.techo[0] = 0;
+            tunel.suelo[0] = ALTO - 1;
 
             // dejamos 0 como la última y avanzamos hasta dar la vuelta
-            //tunel.ini = 1;
+            tunel.ini = 1;
             for (int i = 1; i < ANCHO; i++)
             {
-                //AvanzaTunel(ref tunel);
+                AvanzaTunel(ref tunel);
             }
             // al dar la vuelta y quedará tunel.ini=0    
         }
@@ -130,8 +130,14 @@ namespace FPII23_P1_Naves
             Console.BackgroundColor = ConsoleColor.Black;
             if (DEBUG)
             {
-                Console.WriteLine("\n" + string.Join(" ", tunel.suelo));
-                Console.WriteLine("ini: " + tunel.ini);
+                Console.WriteLine();
+                foreach (var item in tunel.suelo)
+                {
+                    Console.Write(" " + $"{item % 10}");
+                }
+
+                //Console.WriteLine("\n" + string.Join("", tunel.suelo));
+                Console.WriteLine("\nini: " + tunel.ini);
             }
         }
 
