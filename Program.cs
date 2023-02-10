@@ -2,21 +2,16 @@
 // Cynthia Tristán Álvarez
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FPII23_P1_Naves
 {
     internal class Program
     {
         static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
-        const bool DEBUG = false; // para sacar información adicional en el Render
-        const int ANCHO = 5, 
+        const bool DEBUG = true; // para sacar información adicional en el Render
+        const int ANCHO = 5,
                   ALTO = 5,  // área de juego
-                  MAX_BALAS = 5, 
+                  MAX_BALAS = 5,
                   MAX_ENEMIGOS = 9;
 
         // Evitar Console.Clear en Windows
@@ -44,7 +39,7 @@ namespace FPII23_P1_Naves
             //tunel.suelo = new int[ANCHO];
             //tunel.techo = new int[ANCHO];
 
-            tunel.ini = 0;
+            tunel.ini = 4;
             tunel.techo = new int[] { 1, 1, 2, 1, 0 };
             tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
 
@@ -115,33 +110,19 @@ namespace FPII23_P1_Naves
                 Console.WriteLine(string.Join(" ", tunel.techo));
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
-            /*
             for (int j = 0; j < ALTO; j++)
             {
                 for (int i = 0; i < ANCHO; i++)
                 {
-                    if (j >= tunel.suelo[tunel.ini] || j <= tunel.techo[tunel.ini])
-                    {
+                    if (j <= tunel.techo[(tunel.ini + i) % ANCHO] || j >= tunel.suelo[(tunel.ini + i) % ANCHO])
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    }
                     else
-                    {
                         Console.BackgroundColor = ConsoleColor.Black;
-                    }
-                    
+                    if (DEBUG)
+                        Console.SetCursorPosition(i * 2, j + 1);
+                    else
+                        Console.SetCursorPosition(i * 2, j);
                     Console.Write("  ");
-
-                }
-                Console.WriteLine();
-            }
-            */
-
-            for (int i = 0; i < ANCHO; i++)
-            {
-                for (int j = 0; j < ALTO; j++)
-                {
-                    Console.SetCursorPosition(j * 2, i * 2);
-                    Console.Write(" x");
                 }
             }
 
@@ -149,7 +130,7 @@ namespace FPII23_P1_Naves
             Console.BackgroundColor = ConsoleColor.Black;
             if (DEBUG)
             {
-                Console.WriteLine("\n" +string.Join(" ", tunel.suelo));
+                Console.WriteLine("\n" + string.Join(" ", tunel.suelo));
                 Console.WriteLine("ini: " + tunel.ini);
             }
         }
