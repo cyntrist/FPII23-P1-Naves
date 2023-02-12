@@ -2,6 +2,7 @@
 // Cynthia Tristán Álvarez
 
 using System;
+using System.Threading;
 
 namespace FPII23_P1_Naves
 {
@@ -16,6 +17,7 @@ namespace FPII23_P1_Naves
 
         // Evitar Console.Clear en Windows
 
+        #region TIPOS
         struct Tunel
         {
             public int[] suelo, techo;
@@ -32,16 +34,20 @@ namespace FPII23_P1_Naves
             public Entidad[] ent;
             public int num;
         }
+        #endregion
 
+        #region MÉTODOS
         static void IniciaTunel(out Tunel tunel)
         {
             // creamos arrays
             tunel.suelo = new int[ANCHO];
             tunel.techo = new int[ANCHO];
 
+            // ** Bloque de iniciación manual
             //tunel.ini = 4;
             //tunel.techo = new int[] { 1, 1, 2, 1, 0 };
-            //1tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
+            //tunel.suelo = new int[] { 3, 3, 4, 3, 4 };
+            // **
 
             // rellenamos posicion 0 como semilla para generar el resto
             tunel.techo[0] = 0;
@@ -107,9 +113,13 @@ namespace FPII23_P1_Naves
             Console.SetCursorPosition(0, 0);
             if (DEBUG)
             {
-                Console.WriteLine(string.Join(" ", tunel.techo));
+                for (int i = 0; i < ANCHO; i++)
+                {
+                    Console.Write(" " + tunel.techo[((tunel.ini + i) % ANCHO)] % 10);
+                }
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
+
             for (int j = 0; j < ALTO; j++)
             {
                 for (int i = 0; i < ANCHO; i++)
@@ -131,29 +141,80 @@ namespace FPII23_P1_Naves
             if (DEBUG)
             {
                 Console.WriteLine();
-                foreach (var item in tunel.suelo)
+                for (int i = 0; i < ANCHO; i++)
                 {
-                    Console.Write(" " + $"{item % 10}");
+                    Console.Write(" " + tunel.suelo[((tunel.ini + i) % ANCHO)] % 10);
                 }
-
-                //Console.WriteLine("\n" + string.Join("", tunel.suelo));
-                Console.WriteLine("\nini: " + tunel.ini);
+                Console.Write("\nini: " + tunel.ini + " ");
             }
         }
 
+        static void AñadeEntidad(Entidad ent, GrEntidades gr) // Sin probar, planteamiento inicial según el enunciado
+        {
+            gr.ent[gr.num] = ent;
+            gr.num++;
+        }
+
+        static void EliminaEntidad(int i, GrEntidades gr) // Sin probar, planteamiento inicial según el enunciado
+        {
+            while (i < gr.num)
+            {
+                gr.ent[i - 1] = gr.ent[i];
+                i++;
+            }
+            gr.num--;
+        }
+
+        static void AvanzaNave(char ch, Entidad nave)
+        {
+            switch (ch)
+            {
+                case 'l': // left
+                    if (nave.col > 0)
+                        nave.col--;
+                    break;
+                case 'r': // right
+                    if (nave.col < ANCHO)
+                        nave.col++;
+                    break;
+                case 'u': // up
+                    if (nave.fil >= ALTO)
+                        nave.fil--;
+                    break;
+                case 'd': // down
+                    if (nave.fil < ALTO)
+                        nave.fil++;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        static void Render(Tunel tunel, Entidad nave)
+        {
+
+        }
+        #endregion
+
         static void Main(string[] args)
         {
+            Entidad jugador;
+            jugador.col = ANCHO / 2;
+            jugador.fil = ALTO / 2;
+
+            GrEntidades Enemigos;
+            GrEntidades Balas;
+            Enemigos.ent = new Entidad[MAX_ENEMIGOS];
+            Balas.ent = new Entidad[MAX_BALAS];
+
             IniciaTunel(out Tunel tunel);
-            RenderTunel(tunel);
-            while (true) ;
-            /*
+            RenderTunel(tunel);            
             while (DEBUG)
             {
                 AvanzaTunel(ref tunel);
                 RenderTunel(tunel);
-                Thread.Sleep(200);
+                Thread.Sleep(100);
             }
-            */
         }
     }
 }
