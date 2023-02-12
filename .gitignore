@@ -1,3 +1,7 @@
 *
 !.gitignore
 !Program.cs
+obj/Debug/FPII23-P1-Naves.pdb
+bin/Debug/FPII23-P1-Naves.pdb
+obj/Debug/FPII23-P1-Naves.exe
+bin/Debug/FPII23-P1-Naves.exe

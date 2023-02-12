@@ -165,7 +165,7 @@ namespace FPII23_P1_Naves
             gr.num--;
         }
 
-        static void AvanzaNave(char ch, Entidad nave)
+        static void AvanzaNave(char ch, ref Entidad nave)
         {
             switch (ch)
             {
@@ -178,7 +178,7 @@ namespace FPII23_P1_Naves
                         nave.col++;
                     break;
                 case 'u': // up
-                    if (nave.fil >= ALTO)
+                    if (nave.fil > 0)
                         nave.fil--;
                     break;
                 case 'd': // down
@@ -195,8 +195,8 @@ namespace FPII23_P1_Naves
             RenderTunel(tunel);
             if (DEBUG)
             {
-                Console.WriteLine("nave.col: " + nave.col);
-                Console.WriteLine("nave.fil: " + nave.fil);
+                Console.WriteLine("nave.col: " + nave.col + " ");
+                Console.WriteLine("nave.fil: " + nave.fil + " ");
             }
 
             Console.SetCursorPosition(nave.col * 2, nave.fil);
@@ -219,9 +219,10 @@ namespace FPII23_P1_Naves
 
             IniciaTunel(out Tunel tunel);
             Render(tunel, nave);
-            while (true) ;
-            while (false)
+            while (nave.fil >= 0)
             {
+                char ch = LeeInput();
+                AvanzaNave(ch, ref nave);
                 AvanzaTunel(ref tunel);
                 Render(tunel, nave);
                 Thread.Sleep(100);
