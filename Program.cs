@@ -145,7 +145,7 @@ namespace FPII23_P1_Naves
                 {
                     Console.Write(" " + tunel.suelo[((tunel.ini + i) % ANCHO)] % 10);
                 }
-                Console.Write("\nini: " + tunel.ini + " ");
+                Console.WriteLine("\nini: " + tunel.ini + " ");
             }
         }
 
@@ -192,15 +192,25 @@ namespace FPII23_P1_Naves
 
         static void Render(Tunel tunel, Entidad nave)
         {
+            RenderTunel(tunel);
+            if (DEBUG)
+            {
+                Console.WriteLine("nave.col: " + nave.col);
+                Console.WriteLine("nave.fil: " + nave.fil);
+            }
 
+            Console.SetCursorPosition(nave.col * 2, nave.fil);
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.Write("=>");
+            Console.BackgroundColor = ConsoleColor.Black;
         }
         #endregion
 
         static void Main(string[] args)
         {
-            Entidad jugador;
-            jugador.col = ANCHO / 2;
-            jugador.fil = ALTO / 2;
+            Entidad nave;
+            nave.col = ANCHO / 2;
+            nave.fil = ALTO / 2;
 
             GrEntidades Enemigos;
             GrEntidades Balas;
@@ -208,11 +218,12 @@ namespace FPII23_P1_Naves
             Balas.ent = new Entidad[MAX_BALAS];
 
             IniciaTunel(out Tunel tunel);
-            RenderTunel(tunel);            
-            while (DEBUG)
+            Render(tunel, nave);
+            while (true) ;
+            while (false)
             {
                 AvanzaTunel(ref tunel);
-                RenderTunel(tunel);
+                Render(tunel, nave);
                 Thread.Sleep(100);
             }
         }
