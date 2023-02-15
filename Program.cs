@@ -120,20 +120,17 @@ namespace FPII23_P1_Naves
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
 
-            for (int j = 0; j < ALTO; j++)
+            for (int i = 0; i < ANCHO; i++)
             {
-                for (int i = 0; i < ANCHO; i++)
-                {
-                    if (j <= tunel.techo[(tunel.ini + i) % ANCHO] || j >= tunel.suelo[(tunel.ini + i) % ANCHO])
-                        Console.BackgroundColor = ConsoleColor.DarkBlue;
-                    else
-                        Console.BackgroundColor = ConsoleColor.Black;
-                    if (DEBUG)
-                        Console.SetCursorPosition(i * 2, j + 1);
-                    else
-                        Console.SetCursorPosition(i * 2, j);
-                    Console.Write("  ");
-                }
+                if (j <= tunel.techo[(tunel.ini + i) % ANCHO] || j >= tunel.suelo[(tunel.ini + i) % ANCHO])
+                    Console.BackgroundColor = ConsoleColor.DarkBlue;
+                else
+                    Console.BackgroundColor = ConsoleColor.Black;
+                if (DEBUG)
+                    Console.SetCursorPosition(i * 2, j + 1);
+                else
+                    Console.SetCursorPosition(i * 2, j);
+                Console.Write("  ");
             }
 
             //DEBUG ↓ ↓ ↓ ↓ ↓ ↓ ↓ 
@@ -204,6 +201,24 @@ namespace FPII23_P1_Naves
             Console.Write("=>");
             Console.BackgroundColor = ConsoleColor.Black;
         }
+
+        static void GeneraEnemigo(GrEntidades enemigos, Tunel tunel)
+        {
+            if (enemigos.num < MAX_ENEMIGOS)
+            {
+                int chance = rnd.Next(0, 5);
+                if (chance == 0)
+                {
+                    //Console.SetCursorPosition(nosejeje, ANCHO);
+                    Console.Write("<>");
+                }
+            }
+        }
+
+        static void AvanzaEnemigo(GrEntidades enemigos)
+        {
+
+        }
         #endregion
 
         static void Main(string[] args)
@@ -222,10 +237,10 @@ namespace FPII23_P1_Naves
             while (nave.fil >= 0)
             {
                 char ch = LeeInput();
-                AvanzaNave(ch, ref nave);
                 AvanzaTunel(ref tunel);
+                AvanzaNave(ch, ref nave);
                 Render(tunel, nave);
-                Thread.Sleep(100);
+                Thread.Sleep(300);
             }
         }
     }
