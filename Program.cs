@@ -39,6 +39,8 @@ namespace FPII23_P1_Naves
         #region MÉTODOS
         static void IniciaTunel(out Tunel tunel)
         {
+            Console.CursorVisible = false;
+
             // creamos arrays
             tunel.suelo = new int[ANCHO];
             tunel.techo = new int[ANCHO];
@@ -120,17 +122,20 @@ namespace FPII23_P1_Naves
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
 
-            for (int i = 0; i < ANCHO; i++)
+            for (int j = 0; j < ALTO; j++)
             {
-                if (j <= tunel.techo[(tunel.ini + i) % ANCHO] || j >= tunel.suelo[(tunel.ini + i) % ANCHO])
-                    Console.BackgroundColor = ConsoleColor.DarkBlue;
-                else
-                    Console.BackgroundColor = ConsoleColor.Black;
-                if (DEBUG)
-                    Console.SetCursorPosition(i * 2, j + 1);
-                else
-                    Console.SetCursorPosition(i * 2, j);
-                Console.Write("  ");
+                for (int i = 0; i < ANCHO; i++)
+                {
+                    if (j <= tunel.techo[(tunel.ini + i) % ANCHO] || j >= tunel.suelo[(tunel.ini + i) % ANCHO])
+                        Console.BackgroundColor = ConsoleColor.DarkBlue;
+                    else
+                        Console.BackgroundColor = ConsoleColor.Black;
+                    if (DEBUG)
+                        Console.SetCursorPosition(i * 2, j + 1);
+                    else
+                        Console.SetCursorPosition(i * 2, j);
+                    Console.Write("  ");
+                }
             }
 
             //DEBUG ↓ ↓ ↓ ↓ ↓ ↓ ↓ 
