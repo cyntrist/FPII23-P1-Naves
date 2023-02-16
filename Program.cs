@@ -16,6 +16,7 @@ namespace FPII23_P1_Naves
                   MAX_ENEMIGOS = 9;
 
         // Evitar Console.Clear en Windows
+        // Errata en ColBalasTunel, se refiere a balas en vez de a nave obvs lol
 
         #region TIPOS
         struct Tunel
@@ -31,8 +32,8 @@ namespace FPII23_P1_Naves
 
         struct GrEntidades
         {
-            public Entidad[] ent;
-            public int num;
+            public Entidad[] ent; // array de entidades
+            public int num; // cantidad de entidades (o enemigos o balas) / la primera posicion libre
         }
         #endregion
 
@@ -151,19 +152,15 @@ namespace FPII23_P1_Naves
             }
         }
 
-        static void AñadeEntidad(Entidad ent, GrEntidades gr) // Sin probar, planteamiento inicial según el enunciado
+        static void AñadeEntidad(Entidad ent, ref GrEntidades gr) 
         {
             gr.ent[gr.num] = ent;
             gr.num++;
         }
 
-        static void EliminaEntidad(int i, GrEntidades gr) // Sin probar, planteamiento inicial según el enunciado
+        static void EliminaEntidad(int i, ref GrEntidades gr) // Da errores en el penúltimo
         {
-            while (i < gr.num)
-            {
-                gr.ent[i - 1] = gr.ent[i];
-                i++;
-            }
+            gr.ent[i] = gr.ent[gr.num - 1];
             gr.num--;
         }
 
@@ -176,11 +173,13 @@ namespace FPII23_P1_Naves
                         nave.col--;
                     break;
                 case 'r': // right
-                    if (nave.col < ANCHO)
+                    if (nave.col < ANCHO - 1)
                         nave.col++;
                     break;
                 case 'u': // up
-                    if (nave.fil > 0)
+                    if (DEBUG && nave.fil > 1)
+                        nave.fil--;
+                    else if (!DEBUG && nave.fil > 0)
                         nave.fil--;
                     break;
                 case 'd': // down
@@ -192,37 +191,64 @@ namespace FPII23_P1_Naves
             }
         }
 
-        static void Render(Tunel tunel, Entidad nave)
+        static void Render(Tunel tunel, Entidad nave, GrEntidades enemigos)
         {
             RenderTunel(tunel);
             if (DEBUG)
             {
                 Console.WriteLine("nave.col: " + nave.col + " ");
                 Console.WriteLine("nave.fil: " + nave.fil + " ");
+                Console.Write("enemigos.col: ");
+                for(int i = 0; i < enemigos.num; i++)
+                {
+                    Console.Write((enemigos.ent[i].col) + ",");
+                }
+                Console.WriteLine();
+                Console.Write("enemigos.fil: ");
+                for (int i = 0; i < enemigos.num; i++)
+                {
+                    Console.Write((enemigos.ent[i].col) + ",");
+                }
+                Console.WriteLine();
             }
-
-            Console.SetCursorPosition(nave.col * 2, nave.fil);
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
+
+            // NAVE
+            Console.SetCursorPosition(nave.col * 2, nave.fil);
             Console.Write("=>");
+
+            // ENEMIGOS
+            for (int i = 0; i < enemigos.num; i++)
+            {
+                Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil); // ERROR EN EL PENÚLTIMO
+                Console.Write("<>");
+            }
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
-        static void GeneraEnemigo(GrEntidades enemigos, Tunel tunel)
+        static void GeneraEnemigo(ref GrEntidades enemigos, Tunel tunel)
         {
             if (enemigos.num < MAX_ENEMIGOS)
             {
-                int chance = rnd.Next(0, 5);
+                int chance = rnd.Next(0, 4);
                 if (chance == 0)
                 {
-                    //Console.SetCursorPosition(nosejeje, ANCHO);
-                    Console.Write("<>");
+                    Entidad enemigo;
+                    enemigo.col = ANCHO - 1;
+                    enemigo.fil = rnd.Next(tunel.techo[(tunel.ini + ANCHO - 1) % ANCHO] + 1, tunel.suelo[(tunel.ini + ANCHO - 1) % ANCHO]);
+                    AñadeEntidad(enemigo, ref enemigos);
                 }
             }
         }
 
         static void AvanzaEnemigo(GrEntidades enemigos)
         {
-
+            for (int i = 0; i < enemigos.num; i++)
+            {
+                enemigos.ent[i].col--;
+                if (enemigos.ent[i].col <= 0) // Posible localización de error de borrado del penúltimo, hay que mirar igualmente
+                    EliminaEntidad(i, ref enemigos);
+            }
         }
         #endregion
 
@@ -232,20 +258,24 @@ namespace FPII23_P1_Naves
             nave.col = ANCHO / 2;
             nave.fil = ALTO / 2;
 
-            GrEntidades Enemigos;
-            GrEntidades Balas;
-            Enemigos.ent = new Entidad[MAX_ENEMIGOS];
-            Balas.ent = new Entidad[MAX_BALAS];
+            GrEntidades enemigos;
+            enemigos.ent = new Entidad[MAX_ENEMIGOS];
+            enemigos.num = 0;
+
+            GrEntidades balas;
+            balas.ent = new Entidad[MAX_BALAS];
 
             IniciaTunel(out Tunel tunel);
-            Render(tunel, nave);
+            Render(tunel, nave, enemigos);
             while (nave.fil >= 0)
             {
                 char ch = LeeInput();
                 AvanzaTunel(ref tunel);
+                GeneraEnemigo(ref enemigos, tunel);
+                AvanzaEnemigo(enemigos);
                 AvanzaNave(ch, ref nave);
-                Render(tunel, nave);
-                Thread.Sleep(300);
+                Render(tunel, nave, enemigos);
+                Thread.Sleep(100);
             }
         }
     }
