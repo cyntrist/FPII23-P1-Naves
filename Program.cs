@@ -122,7 +122,7 @@ namespace FPII23_P1_Naves
                 }
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
-
+            
             for (int j = 0; j < ALTO; j++)
             {
                 for (int i = 0; i < ANCHO; i++)
@@ -131,10 +131,7 @@ namespace FPII23_P1_Naves
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
                     else
                         Console.BackgroundColor = ConsoleColor.Black;
-                    if (DEBUG)
-                        Console.SetCursorPosition(i * 2, j + 1);
-                    else
-                        Console.SetCursorPosition(i * 2, j);
+                    Console.SetCursorPosition(i * 2, j + 1);
                     Console.Write("  ");
                 }
             }
@@ -158,10 +155,10 @@ namespace FPII23_P1_Naves
             gr.num++;
         }
 
-        static void EliminaEntidad(int i, ref GrEntidades gr) // Da errores en el penúltimo
+        static void EliminaEntidad(int i, ref GrEntidades gr) // me cago en la puta de oros DIOSSSSSSSSSSSSS
         {
             gr.ent[i] = gr.ent[gr.num - 1];
-            gr.num--;
+            gr.num = gr.num - 1;
         }
 
         static void AvanzaNave(char ch, ref Entidad nave)
@@ -191,38 +188,54 @@ namespace FPII23_P1_Naves
             }
         }
 
-        static void Render(Tunel tunel, Entidad nave, GrEntidades enemigos)
+        static void Render(Tunel tunel, Entidad nave, GrEntidades enemigos, GrEntidades balas, GrEntidades colisiones)
         {
             RenderTunel(tunel);
             if (DEBUG)
             {
-                Console.WriteLine("nave.col: " + nave.col + " ");
-                Console.WriteLine("nave.fil: " + nave.fil + " ");
-                Console.Write("enemigos.col: ");
-                for(int i = 0; i < enemigos.num; i++)
-                {
-                    Console.Write((enemigos.ent[i].col) + ",");
-                }
-                Console.WriteLine();
-                Console.Write("enemigos.fil: ");
-                for (int i = 0; i < enemigos.num; i++)
-                {
-                    Console.Write((enemigos.ent[i].col) + ",");
-                }
-                Console.WriteLine();
+                Console.WriteLine("nave.col: " + nave.col + "  ");                                  // nave
+                Console.WriteLine("nave.fil: " + nave.fil + "  ");
+                Console.Write("enemigos.col: ");                                                    // enemigos
+                for(int i = 0; i < enemigos.num; i++) Console.Write((enemigos.ent[i].col) + "  ");
+                Console.Write("\nenemigos.fil: ");
+                for (int i = 0; i < enemigos.num; i++) Console.Write((enemigos.ent[i].fil) + "  ");
+                Console.WriteLine("\nenemigos.num: " + enemigos.num);
+                Console.WriteLine("balas.num: " + balas.num);                                       // balas
             }
-            Console.BackgroundColor = ConsoleColor.DarkMagenta;
 
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
             // NAVE
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.SetCursorPosition(nave.col * 2, nave.fil);
             Console.Write("=>");
 
             // ENEMIGOS
+            Console.ForegroundColor = ConsoleColor.Yellow;
             for (int i = 0; i < enemigos.num; i++)
             {
-                Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil); // ERROR EN EL PENÚLTIMO
-                Console.Write("<>");
+                if (enemigos.ent[i].col >= 0)
+                {
+                    Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil + 1);
+                    Console.Write("<>");
+                }
             }
+
+            // BALAS
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            for (int i = 0; i < balas.num; i++)
+            {
+                Console.SetCursorPosition(balas.ent[i].col * 2, balas.ent[i].fil);
+                Console.Write("--");
+            }
+            // COLISIONES
+            Console.ForegroundColor = ConsoleColor.Red;
+            for (int i = 0; i < colisiones.num; i++)
+            {
+                Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil);
+                Console.Write("**");
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
         }
 
@@ -231,24 +244,75 @@ namespace FPII23_P1_Naves
             if (enemigos.num < MAX_ENEMIGOS)
             {
                 int chance = rnd.Next(0, 4);
+                if (DEBUG) chance = 0;
                 if (chance == 0)
                 {
+                    int siguiente = (tunel.ini + ANCHO - 1) % ANCHO;
                     Entidad enemigo;
                     enemigo.col = ANCHO - 1;
-                    enemigo.fil = rnd.Next(tunel.techo[(tunel.ini + ANCHO - 1) % ANCHO] + 1, tunel.suelo[(tunel.ini + ANCHO - 1) % ANCHO]);
+                    enemigo.fil = rnd.Next(tunel.techo[siguiente] + 1, tunel.suelo[siguiente] - 1);
                     AñadeEntidad(enemigo, ref enemigos);
                 }
             }
         }
 
-        static void AvanzaEnemigo(GrEntidades enemigos)
+        static void AvanzaEnemigo(ref GrEntidades enemigos)
         {
             for (int i = 0; i < enemigos.num; i++)
             {
                 enemigos.ent[i].col--;
-                if (enemigos.ent[i].col <= 0) // Posible localización de error de borrado del penúltimo, hay que mirar igualmente
+                if (enemigos.ent[i].col < 0) 
                     EliminaEntidad(i, ref enemigos);
             }
+        }
+
+        static void GeneraBala(ref GrEntidades balas, Entidad nave)
+        {
+            if (balas.num < MAX_BALAS && nave.col < ANCHO - 1) 
+            {
+                Entidad bala;
+                bala.col = nave.col;
+                bala.fil = nave.fil;
+                AñadeEntidad(bala, ref balas);
+            }
+        }
+
+        static void AvanzaBalas(ref GrEntidades balas)
+        {
+            for (int i = 0; i < balas.num; i++)
+            {
+                balas.ent[i].col++;
+                if (balas.ent[i].col >= ANCHO)
+                    EliminaEntidad(i, ref balas);
+            }
+        }
+
+        static void ColNaveTunel(Tunel tunel, Entidad nave, GrEntidades colisiones)
+        {
+
+        }
+        
+        static void ColBalasTunel(Tunel tunel, GrEntidades balas, GrEntidades colisiones)
+        {
+
+        }
+
+        static void ColNaveEnemigos(Entidad nave, GrEntidades enemigos, GrEntidades colisiones)
+        {
+
+        }
+
+        static void ColBalasEnemigos(GrEntidades balas, GrEntidades enemigos, GrEntidades colisiones)
+        {
+
+        }
+
+        static void Colisiones(Tunel tunel, Entidad nave, GrEntidades balas, GrEntidades enemigos, GrEntidades colisiones)
+        {
+            ColNaveTunel(tunel, nave, colisiones);
+            ColBalasTunel(tunel, balas, colisiones);
+            ColNaveEnemigos(nave, enemigos, colisiones);
+            ColBalasEnemigos(balas, enemigos, colisiones);
         }
         #endregion
 
@@ -264,18 +328,25 @@ namespace FPII23_P1_Naves
 
             GrEntidades balas;
             balas.ent = new Entidad[MAX_BALAS];
+            balas.num = 0;
+
+            GrEntidades colisiones;
+            colisiones.ent = new Entidad[100];
+            colisiones.num = 0;
 
             IniciaTunel(out Tunel tunel);
-            Render(tunel, nave, enemigos);
+            Render(tunel, nave, enemigos, balas, colisiones);
             while (nave.fil >= 0)
             {
                 char ch = LeeInput();
                 AvanzaTunel(ref tunel);
                 GeneraEnemigo(ref enemigos, tunel);
-                AvanzaEnemigo(enemigos);
+                AvanzaEnemigo(ref enemigos);
                 AvanzaNave(ch, ref nave);
-                Render(tunel, nave, enemigos);
-                Thread.Sleep(100);
+                if (ch == 'x') GeneraBala(ref balas, nave);
+                AvanzaBalas(ref balas);
+                Render(tunel, nave, enemigos, balas, colisiones);
+                Thread.Sleep(300);
             }
         }
     }
