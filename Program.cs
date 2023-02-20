@@ -13,7 +13,7 @@ namespace FPII23_P1_Naves
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly WindowsMediaPlayer ostPlayer = new WindowsMediaPlayer();
         static readonly SoundPlayer sfxPlayer = new SoundPlayer();
-        const bool DEBUG = false; // para sacar información adicional en el Render
+        const bool DEBUG = true; // para sacar información adicional en el Render
         const int ANCHO = 20,
                   ALTO = 16,  // área de juego
                   MAX_BALAS = 5,
@@ -411,14 +411,13 @@ namespace FPII23_P1_Naves
                     Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
                 }
                 Render(tunel, nave, enemigos, balas, colisiones);
-                Thread.Sleep(200);
-                for (int i = 0; i < colisiones.num; i++) // Elimina colisiones
-                {
-                    EliminaEntidad(i, ref colisiones);
-                }
+                Thread.Sleep(100);
+                for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);
             }
             ostPlayer.close();
-            Console.Clear();
+            Console.SetCursorPosition(ANCHO / 2, ALTO / 2);
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine("El juego ha finalizado.");
             while (true) ;
         }
