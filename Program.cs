@@ -3,17 +3,23 @@
 
 using System;
 using System.Threading;
+using System.Media;
+using WMPLib;
 
 namespace FPII23_P1_Naves
 {
     internal class Program
     {
-        static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
+        static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
+        static readonly WindowsMediaPlayer ostPlayer = new WindowsMediaPlayer();
+        static readonly SoundPlayer sfxPlayer = new SoundPlayer();
         const bool DEBUG = false; // para sacar información adicional en el Render
         const int ANCHO = 20,
                   ALTO = 16,  // área de juego
                   MAX_BALAS = 5,
                   MAX_ENEMIGOS = 9;
+        const string SHOOT_SOUND = @"shoot.wav",
+                     HIT_SOUND = @"hit.wav";
 
         // Evitar Console.Clear en Windows
         // Errata en ColBalasTunel, se refiere a balas en vez de a nave obvs lol
@@ -239,12 +245,13 @@ namespace FPII23_P1_Naves
         {
             if (enemigos.num < MAX_ENEMIGOS)
             {
-                int chance = rnd.Next(0, 4);
+                int chance;
                 if (DEBUG) chance = 0;
+                else chance = rnd.Next(0, 4);
+
                 if (chance == 0)
                 {
                     int ind = (tunel.ini + ANCHO - 1) % ANCHO;
-                    //int anterior = (tunel.ini + ANCHO - 1) % ANCHO;
                     Entidad enemigo;
                     enemigo.col = ANCHO - 1;
                     enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1);
@@ -271,6 +278,7 @@ namespace FPII23_P1_Naves
                 bala.col = nave.col;
                 bala.fil = nave.fil;
                 AñadeEntidad(bala, ref balas);
+                Sonido(sfxPlayer, SHOOT_SOUND);
             }
         }
 
@@ -294,6 +302,7 @@ namespace FPII23_P1_Naves
                 colision.col = nave.col;
                 AñadeEntidad(colision, ref colisiones);
                 nave.fil = -1;
+                Sonido(sfxPlayer, HIT_SOUND);
             }
         }
 
@@ -309,7 +318,7 @@ namespace FPII23_P1_Naves
                     colision.col = balas.ent[i].col;
                     AñadeEntidad(colision, ref colisiones);
                     EliminaEntidad(i, ref balas);
-                    
+                    Sonido(sfxPlayer, HIT_SOUND);
                 }
             }
         }
@@ -326,6 +335,7 @@ namespace FPII23_P1_Naves
                     AñadeEntidad(colision, ref colisiones);
                     EliminaEntidad(i, ref enemigos);
                     nave.fil = -1;
+                    Sonido(sfxPlayer, HIT_SOUND);
                 }
             }
         }
@@ -344,6 +354,7 @@ namespace FPII23_P1_Naves
                         AñadeEntidad(colision, ref colisiones);
                         EliminaEntidad(i, ref enemigos);
                         EliminaEntidad(j, ref balas);
+                        Sonido(sfxPlayer, HIT_SOUND);
                     }
                 }
             }
@@ -355,6 +366,12 @@ namespace FPII23_P1_Naves
             ColBalasTunel(tunel, ref balas, ref colisiones);
             ColNaveEnemigos(ref nave, ref enemigos, ref colisiones);
             ColBalasEnemigos(ref balas, ref enemigos, ref colisiones);
+        }
+
+        static void Sonido(SoundPlayer player, string sonido)
+        {
+            player.SoundLocation = sonido;
+            player.Play();
         }
         #endregion
 
@@ -378,14 +395,15 @@ namespace FPII23_P1_Naves
 
             IniciaTunel(out Tunel tunel);
             Render(tunel, nave, enemigos, balas, colisiones);
-            while (nave.fil >= 0)
+            ostPlayer.URL = @"ost.wav";
+            while (nave.fil >= 0) // bucle principal
             {
                 char ch = LeeInput();
                 AvanzaTunel(ref tunel);
                 GeneraEnemigo(ref enemigos, tunel);
                 AvanzaEnemigo(ref enemigos);
                 Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
-                if (nave.fil >= 0) // ssegun enunciado, pero hay que optimizar, no tiene mucho sentido
+                if (nave.fil >= 0) // segun enunciado
                 {
                     AvanzaNave(ch, ref nave);
                     if (ch == 'x') GeneraBala(ref balas, nave);
@@ -399,7 +417,7 @@ namespace FPII23_P1_Naves
                     EliminaEntidad(i, ref colisiones);
                 }
             }
-
+            ostPlayer.close();
             Console.Clear();
             Console.WriteLine("El juego ha finalizado.");
             while (true) ;
