@@ -9,7 +9,7 @@ namespace FPII23_P1_Naves
     internal class Program
     {
         static Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
-        const bool DEBUG = true; // para sacar información adicional en el Render
+        const bool DEBUG = false; // para sacar información adicional en el Render
         const int ANCHO = 20,
                   ALTO = 16,  // área de juego
                   MAX_BALAS = 5,
@@ -117,12 +117,10 @@ namespace FPII23_P1_Naves
             if (DEBUG)
             {
                 for (int i = 0; i < ANCHO; i++)
-                {
                     Console.Write(" " + tunel.techo[((tunel.ini + i) % ANCHO)] % 10);
-                }
             }
             //DEBUG ↑ ↑ ↑ ↑ ↑ ↑ 
-            
+
             for (int j = 0; j < ALTO; j++)
             {
                 for (int i = 0; i < ANCHO; i++)
@@ -131,7 +129,7 @@ namespace FPII23_P1_Naves
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
                     else
                         Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(i * 2, j + 1);
+                    Console.SetCursorPosition(i * 2, j + Convert.ToInt16(DEBUG));
                     Console.Write("  ");
                 }
             }
@@ -142,14 +140,12 @@ namespace FPII23_P1_Naves
             {
                 Console.WriteLine();
                 for (int i = 0; i < ANCHO; i++)
-                {
                     Console.Write(" " + tunel.suelo[((tunel.ini + i) % ANCHO)] % 10);
-                }
                 Console.WriteLine("\nini: " + tunel.ini + " ");
             }
         }
 
-        static void AñadeEntidad(Entidad ent, ref GrEntidades gr) 
+        static void AñadeEntidad(Entidad ent, ref GrEntidades gr)
         {
             gr.ent[gr.num] = ent;
             gr.num++;
@@ -158,7 +154,7 @@ namespace FPII23_P1_Naves
         static void EliminaEntidad(int i, ref GrEntidades gr) // me cago en la puta de oros DIOSSSSSSSSSSSSS
         {
             gr.ent[i] = gr.ent[gr.num - 1];
-            gr.num = gr.num - 1;
+            gr.num--;
         }
 
         static void AvanzaNave(char ch, ref Entidad nave)
@@ -174,13 +170,11 @@ namespace FPII23_P1_Naves
                         nave.col++;
                     break;
                 case 'u': // up
-                    if (DEBUG && nave.fil > 1)
-                        nave.fil--;
-                    else if (!DEBUG && nave.fil > 0)
+                    if (nave.fil > 0)
                         nave.fil--;
                     break;
                 case 'd': // down
-                    if (nave.fil < ALTO)
+                    if (nave.fil < ALTO - 1)
                         nave.fil++;
                     break;
                 default:
@@ -193,21 +187,22 @@ namespace FPII23_P1_Naves
             RenderTunel(tunel);
             if (DEBUG)
             {
-                Console.WriteLine("nave.col: " + nave.col + "  ");                                  // nave
-                Console.WriteLine("nave.fil: " + nave.fil + "  ");
-                Console.Write("enemigos.col: ");                                                    // enemigos
-                for(int i = 0; i < enemigos.num; i++) Console.Write((enemigos.ent[i].col) + "  ");
-                Console.Write("\nenemigos.fil: ");
-                for (int i = 0; i < enemigos.num; i++) Console.Write((enemigos.ent[i].fil) + "  ");
+                Console.WriteLine("nave.col: " + nave.col + ", nave.fil: " + nave.fil + "  ");                                  
+                Console.Write("enemigos.col: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].col + "  ");
+                Console.Write("\nenemigos.fil: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].fil + "  ");
                 Console.WriteLine("\nenemigos.num: " + enemigos.num);
-                Console.WriteLine("balas.num: " + balas.num);                                       // balas
+                Console.WriteLine("balas.num: " + balas.num);                                       
             }
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
             // NAVE
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.SetCursorPosition(nave.col * 2, nave.fil);
-            Console.Write("=>");
+            if (nave.fil >= 0) // hay que ver como optimizar este if, pero como el enunciado dice de usar nave.fil 
+                               // como condicion para parar el juego pues lol jijjijiji
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.SetCursorPosition(nave.col * 2, nave.fil + Convert.ToInt16(DEBUG));
+                Console.Write("=>");
+            }
 
             // ENEMIGOS
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -215,7 +210,7 @@ namespace FPII23_P1_Naves
             {
                 if (enemigos.ent[i].col >= 0)
                 {
-                    Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil + 1);
+                    Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil + Convert.ToInt16(DEBUG));
                     Console.Write("<>");
                 }
             }
@@ -224,14 +219,15 @@ namespace FPII23_P1_Naves
             Console.ForegroundColor = ConsoleColor.Magenta;
             for (int i = 0; i < balas.num; i++)
             {
-                Console.SetCursorPosition(balas.ent[i].col * 2, balas.ent[i].fil);
+                Console.SetCursorPosition(balas.ent[i].col * 2, balas.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("--");
             }
+
             // COLISIONES
             Console.ForegroundColor = ConsoleColor.Red;
             for (int i = 0; i < colisiones.num; i++)
             {
-                Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil);
+                Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
             }
 
@@ -247,10 +243,11 @@ namespace FPII23_P1_Naves
                 if (DEBUG) chance = 0;
                 if (chance == 0)
                 {
-                    int siguiente = (tunel.ini + ANCHO - 1) % ANCHO;
+                    int ind = (tunel.ini + ANCHO - 1) % ANCHO;
+                    //int anterior = (tunel.ini + ANCHO - 1) % ANCHO;
                     Entidad enemigo;
                     enemigo.col = ANCHO - 1;
-                    enemigo.fil = rnd.Next(tunel.techo[siguiente] + 1, tunel.suelo[siguiente] - 1);
+                    enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1);
                     AñadeEntidad(enemigo, ref enemigos);
                 }
             }
@@ -261,14 +258,14 @@ namespace FPII23_P1_Naves
             for (int i = 0; i < enemigos.num; i++)
             {
                 enemigos.ent[i].col--;
-                if (enemigos.ent[i].col < 0) 
+                if (enemigos.ent[i].col < 0)
                     EliminaEntidad(i, ref enemigos);
             }
         }
 
         static void GeneraBala(ref GrEntidades balas, Entidad nave)
         {
-            if (balas.num < MAX_BALAS && nave.col < ANCHO - 1) 
+            if (balas.num < MAX_BALAS && nave.col < ANCHO - 1)
             {
                 Entidad bala;
                 bala.col = nave.col;
@@ -287,36 +284,81 @@ namespace FPII23_P1_Naves
             }
         }
 
-        static void ColNaveTunel(Tunel tunel, Entidad nave, GrEntidades colisiones)
+        static void ColNaveTunel(Tunel tunel, ref Entidad nave, ref GrEntidades colisiones)
         {
-
-        }
-        
-        static void ColBalasTunel(Tunel tunel, GrEntidades balas, GrEntidades colisiones)
-        {
-
-        }
-
-        static void ColNaveEnemigos(Entidad nave, GrEntidades enemigos, GrEntidades colisiones)
-        {
-
+            int ind = (tunel.ini + nave.col) % ANCHO; 
+            if (nave.fil <= tunel.techo[ind] || nave.fil >= tunel.suelo[ind])
+            {
+                Entidad colision;
+                colision.fil = nave.fil;
+                colision.col = nave.col;
+                AñadeEntidad(colision, ref colisiones);
+                nave.fil = -1;
+            }
         }
 
-        static void ColBalasEnemigos(GrEntidades balas, GrEntidades enemigos, GrEntidades colisiones)
-        {
-
+        static void ColBalasTunel(Tunel tunel, ref GrEntidades balas, ref GrEntidades colisiones)
+        { // IMPORTANTE, QUE LAS BALAS DESTRUYA UN HUECO DEL TUNEL DONDE CHOCAN_: es lo único que queda creo
+            for (int i = 0; i < balas.num; i++)
+            {
+                int ind = (tunel.ini + balas.ent[i].col) % ANCHO;
+                if (balas.ent[i].fil <= tunel.techo[ind] || balas.ent[i].fil >= tunel.suelo[ind])
+                {
+                    Entidad colision;
+                    colision.fil = balas.ent[i].fil;
+                    colision.col = balas.ent[i].col;
+                    AñadeEntidad(colision, ref colisiones);
+                    EliminaEntidad(i, ref balas);
+                    
+                }
+            }
         }
 
-        static void Colisiones(Tunel tunel, Entidad nave, GrEntidades balas, GrEntidades enemigos, GrEntidades colisiones)
+        static void ColNaveEnemigos(ref Entidad nave, ref GrEntidades enemigos, ref GrEntidades colisiones)
         {
-            ColNaveTunel(tunel, nave, colisiones);
-            ColBalasTunel(tunel, balas, colisiones);
-            ColNaveEnemigos(nave, enemigos, colisiones);
-            ColBalasEnemigos(balas, enemigos, colisiones);
+            for (int i = 0; i < enemigos.num; i++)
+            {
+                if (nave.fil == enemigos.ent[i].fil && nave.col == enemigos.ent[i].col)
+                {
+                    Entidad colision;
+                    colision.fil = enemigos.ent[i].fil;
+                    colision.col = enemigos.ent[i].col;
+                    AñadeEntidad(colision, ref colisiones);
+                    EliminaEntidad(i, ref enemigos);
+                    nave.fil = -1;
+                }
+            }
+        }
+
+        static void ColBalasEnemigos(ref GrEntidades balas, ref GrEntidades enemigos, ref GrEntidades colisiones)
+        {
+            for (int i = 0; i < enemigos.num; i++)
+            {
+                for (int j = 0; j < balas.num; j++)
+                {
+                    if (enemigos.ent[i].fil == balas.ent[j].fil && enemigos.ent[i].col == balas.ent[j].col)
+                    {
+                        Entidad colision; 
+                        colision.fil = enemigos.ent[i].fil; 
+                        colision.col = enemigos.ent[i].col;
+                        AñadeEntidad(colision, ref colisiones);
+                        EliminaEntidad(i, ref enemigos);
+                        EliminaEntidad(j, ref balas);
+                    }
+                }
+            }
+        }
+
+        static void Colisiones(ref Tunel tunel, ref Entidad nave, ref GrEntidades balas, ref GrEntidades enemigos, ref GrEntidades colisiones)
+        {
+            ColNaveTunel(tunel, ref nave, ref colisiones);
+            ColBalasTunel(tunel, ref balas, ref colisiones);
+            ColNaveEnemigos(ref nave, ref enemigos, ref colisiones);
+            ColBalasEnemigos(ref balas, ref enemigos, ref colisiones);
         }
         #endregion
 
-        static void Main(string[] args)
+        static void Main()
         {
             Entidad nave;
             nave.col = ANCHO / 2;
@@ -331,7 +373,7 @@ namespace FPII23_P1_Naves
             balas.num = 0;
 
             GrEntidades colisiones;
-            colisiones.ent = new Entidad[100];
+            colisiones.ent = new Entidad[ANCHO * ALTO];
             colisiones.num = 0;
 
             IniciaTunel(out Tunel tunel);
@@ -342,12 +384,25 @@ namespace FPII23_P1_Naves
                 AvanzaTunel(ref tunel);
                 GeneraEnemigo(ref enemigos, tunel);
                 AvanzaEnemigo(ref enemigos);
-                AvanzaNave(ch, ref nave);
-                if (ch == 'x') GeneraBala(ref balas, nave);
-                AvanzaBalas(ref balas);
+                Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
+                if (nave.fil >= 0) // ssegun enunciado, pero hay que optimizar, no tiene mucho sentido
+                {
+                    AvanzaNave(ch, ref nave);
+                    if (ch == 'x') GeneraBala(ref balas, nave);
+                    AvanzaBalas(ref balas);
+                    Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
+                }
                 Render(tunel, nave, enemigos, balas, colisiones);
-                Thread.Sleep(300);
+                Thread.Sleep(200);
+                for (int i = 0; i < colisiones.num; i++) // Elimina colisiones
+                {
+                    EliminaEntidad(i, ref colisiones);
+                }
             }
+
+            Console.Clear();
+            Console.WriteLine("El juego ha finalizado.");
+            while (true) ;
         }
     }
 }

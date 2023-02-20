@@ -6,3 +6,11 @@ E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FP
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.CoreCompileInputs.cache
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.exe
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.pdb
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.exe.config
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.exe
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.pdb
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.AssemblyReference.cache
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.SuggestedBindingRedirects.cache
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.exe
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.pdb
