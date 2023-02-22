@@ -2,8 +2,8 @@
 // Cynthia Tristán Álvarez
 
 using System;
-using System.Threading;
 using System.Media;
+using System.Threading;
 using WMPLib;
 
 namespace FPII23_P1_Naves
@@ -11,15 +11,17 @@ namespace FPII23_P1_Naves
     internal class Program
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
-        static readonly WindowsMediaPlayer ostPlayer = new WindowsMediaPlayer();
-        static readonly SoundPlayer sfxPlayer = new SoundPlayer();
-        const bool DEBUG = false; // para sacar información adicional en el Render
-        const int ANCHO = 20,
-                  ALTO = 16,  // área de juego
-                  MAX_BALAS = 5,
-                  MAX_ENEMIGOS = 9;
-        const string SHOOT_SOUND = @"shoot.wav",
-                     HIT_SOUND = @"hit.wav";
+        static readonly WindowsMediaPlayer ostPlayer = new WindowsMediaPlayer(); // para música de fondo
+        static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
+        const bool DEBUG           = false; // para sacar información adicional en el Render
+        const int ANCHO            = 25,
+                  ALTO             = 16, // área de juego
+                  MAX_BALAS        = 5,
+                  MAX_ENEMIGOS     = 9;
+        const string SHOOT_SOUND   = @"shoot.wav", // localización del sonido de disparo
+                     HIT_SOUND     = @"hit.wav",   // " colision
+                     MENSAJE_PAUSA = "Pausa",      // mensaje al estar pausado el juego
+                     MENSAJE_FINAL = "El juego ha finalizado."; // mensaje al acabar el juego
 
         // Evitar Console.Clear en Windows
         // Errata en ColBalasTunel, se refiere a balas en vez de a nave obvs lol
@@ -135,13 +137,15 @@ namespace FPII23_P1_Naves
                         Console.BackgroundColor = ConsoleColor.DarkBlue;
                     else
                         Console.BackgroundColor = ConsoleColor.Black;
-                    Console.SetCursorPosition(i * 2, j + Convert.ToInt16(DEBUG));
+                    Console.SetCursorPosition(i * 2, j + Convert.ToInt16(DEBUG)); 
+                    // el convert es que como debug es un booleano, puede ser un +1 si salen los números 
+                    // arriba y añadirselo al cursor o no directamente.
                     Console.Write("  ");
                 }
             }
 
             //DEBUG ↓ ↓ ↓ ↓ ↓ ↓ ↓ 
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ResetColor();
             if (DEBUG)
             {
                 Console.WriteLine();
@@ -157,9 +161,9 @@ namespace FPII23_P1_Naves
             gr.num++;
         }
 
-        static void EliminaEntidad(int i, ref GrEntidades gr) // me cago en la puta de oros DIOSSSSSSSSSSSSS
+        static void EliminaEntidad(int i, ref GrEntidades gr) 
         {
-            gr.ent[i] = gr.ent[gr.num - 1];
+            gr.ent[i] = gr.ent[gr.num - 1]; // la última entidad pasa a la posición i del array y num--.
             gr.num--;
         }
 
@@ -193,11 +197,11 @@ namespace FPII23_P1_Naves
             RenderTunel(tunel);
             if (DEBUG)
             {
-                Console.WriteLine("nave.col: " + nave.col + ", nave.fil: " + nave.fil + "  ");                                  
+                Console.WriteLine("nave.col: " + nave.col + ", nave.fil: " + nave.fil + "  ");
                 Console.Write("enemigos.col: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].col + "  ");
                 Console.Write("\nenemigos.fil: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].fil + "  ");
                 Console.WriteLine("\nenemigos.num: " + enemigos.num);
-                Console.WriteLine("balas.num: " + balas.num);                                       
+                Console.WriteLine("balas.num: " + balas.num);
             }
 
             Console.BackgroundColor = ConsoleColor.DarkMagenta;
@@ -236,9 +240,7 @@ namespace FPII23_P1_Naves
                 Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
             }
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ResetColor();
         }
 
         static void GeneraEnemigo(ref GrEntidades enemigos, Tunel tunel)
@@ -246,16 +248,16 @@ namespace FPII23_P1_Naves
             if (enemigos.num < MAX_ENEMIGOS)
             {
                 int chance;
-                if (DEBUG) chance = 0;
-                else chance = rnd.Next(0, 4);
+                if (DEBUG) chance = 0; // siempre genera si estamos en debug
+                else chance = rnd.Next(0, 4); // 1 entre 4
 
-                if (chance == 0)
+                if (chance == 0) // 25% chance
                 {
-                    int ind = (tunel.ini + ANCHO - 1) % ANCHO;
-                    Entidad enemigo;
-                    enemigo.col = ANCHO - 1;
-                    enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1);
-                    AñadeEntidad(enemigo, ref enemigos);
+                    int ind = (tunel.ini + ANCHO - 1) % ANCHO; // la anterior a ini es la última renderizada
+                    Entidad enemigo; // genera entidad ahí
+                    enemigo.col = ANCHO; // a la derecha del todo
+                    enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1); // entre techo y suelo
+                    AñadeEntidad(enemigo, ref enemigos); // la añade al grupo
                 }
             }
         }
@@ -264,8 +266,8 @@ namespace FPII23_P1_Naves
         {
             for (int i = 0; i < enemigos.num; i++)
             {
-                enemigos.ent[i].col--;
-                if (enemigos.ent[i].col < 0)
+                enemigos.ent[i].col--; // mov hacia la izq
+                if (enemigos.ent[i].col < 0) // si se sale, eliminalo
                     EliminaEntidad(i, ref enemigos);
             }
         }
@@ -294,7 +296,7 @@ namespace FPII23_P1_Naves
 
         static void ColNaveTunel(Tunel tunel, ref Entidad nave, ref GrEntidades colisiones)
         {
-            int ind = (tunel.ini + nave.col) % ANCHO; 
+            int ind = (tunel.ini + nave.col) % ANCHO;
             if (nave.fil <= tunel.techo[ind] || nave.fil >= tunel.suelo[ind])
             {
                 Entidad colision;
@@ -307,12 +309,23 @@ namespace FPII23_P1_Naves
         }
 
         static void ColBalasTunel(Tunel tunel, ref GrEntidades balas, ref GrEntidades colisiones)
-        { // IMPORTANTE, QUE LAS BALAS DESTRUYA UN HUECO DEL TUNEL DONDE CHOCAN_: es lo único que queda creo
+        { 
             for (int i = 0; i < balas.num; i++)
             {
-                int ind = (tunel.ini + balas.ent[i].col) % ANCHO;
+                int ind = (tunel.ini + balas.ent[i].col) % ANCHO; // posición respecto al array donde está la bala
                 if (balas.ent[i].fil <= tunel.techo[ind] || balas.ent[i].fil >= tunel.suelo[ind])
-                {
+                {                                             // Si está en techo o en suelo
+                    if (balas.ent[i].fil <= tunel.techo[ind]) // Si está en techo
+                                                                // es para romper el tunel
+                                                                // quiza optimizable, esta algo raro
+                                                                // no hace falta pasar tunel por ref
+                    {                                         
+                        tunel.techo[ind] = balas.ent[i].fil - 1; // techo = fila de la bala
+                    }                                            // todo lo de abajo/arriba a eso se rompe también
+                    else
+                    {                                         // Si no está en techo, está en suelo
+                        tunel.suelo[ind] = balas.ent[i].fil + 1; // suelo = fila de la bala
+                    }
                     Entidad colision;
                     colision.fil = balas.ent[i].fil;
                     colision.col = balas.ent[i].col;
@@ -348,8 +361,8 @@ namespace FPII23_P1_Naves
                 {
                     if (enemigos.ent[i].fil == balas.ent[j].fil && enemigos.ent[i].col == balas.ent[j].col)
                     {
-                        Entidad colision; 
-                        colision.fil = enemigos.ent[i].fil; 
+                        Entidad colision;
+                        colision.fil = enemigos.ent[i].fil;
                         colision.col = enemigos.ent[i].col;
                         AñadeEntidad(colision, ref colisiones);
                         EliminaEntidad(i, ref enemigos);
@@ -373,12 +386,21 @@ namespace FPII23_P1_Naves
             player.SoundLocation = sonido;
             player.Play();
         }
+
+        static void Mensaje(string mensaje, bool pausa)
+        {
+            Console.SetCursorPosition(ANCHO / 2 * 2 - mensaje.Length / 2, ALTO / 2 - 1 + Convert.ToInt16(DEBUG));
+            Console.BackgroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine(mensaje);
+            if (pausa) Console.ReadKey(); // manera sencilla de hacer una pausa
+        }
         #endregion
 
         static void Main()
         {
-            Entidad nave;
-            nave.col = ANCHO / 2;
+            Entidad nave;                                   // Bloque de inicialización de entidades
+            nave.col = ANCHO / 2; 
             nave.fil = ALTO / 2;
 
             GrEntidades enemigos;
@@ -390,36 +412,35 @@ namespace FPII23_P1_Naves
             balas.num = 0;
 
             GrEntidades colisiones;
-            colisiones.ent = new Entidad[ANCHO * ALTO];
+            colisiones.ent = new Entidad[ANCHO * ALTO]; // Cantidad de casillas posibles con colisión (?)
             colisiones.num = 0;
 
             IniciaTunel(out Tunel tunel);
-            Render(tunel, nave, enemigos, balas, colisiones);
-            ostPlayer.URL = @"ost.wav";
-            while (nave.fil >= 0) // bucle principal
+            Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
+            ostPlayer.URL = @"ost.wav";                       // Inicio de la música de fondo
+            while (nave.fil >= 0)                             // Bucle Principal
             {
-                char ch = LeeInput();
-                AvanzaTunel(ref tunel);
-                GeneraEnemigo(ref enemigos, tunel);
-                AvanzaEnemigo(ref enemigos);
-                Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
-                if (nave.fil >= 0) // segun enunciado
+                char ch = LeeInput();                           // Lectura de input
+                AvanzaTunel(ref tunel);                         // Recorrido circular
+                GeneraEnemigo(ref enemigos, tunel);             // Probabilidad de generar un enemigo
+                AvanzaEnemigo(ref enemigos);                    // Avance de cada enemigo
+                Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);     // Colisiones generales
+                if (ch == 'q') nave.fil = -1;                     // Si salir
+                else if (ch == 'p') Mensaje(MENSAJE_PAUSA, true); // Si pausar
+                if (nave.fil >= 0)                                // segun enunciado
                 {
-                    AvanzaNave(ch, ref nave);
-                    if (ch == 'x') GeneraBala(ref balas, nave);
-                    AvanzaBalas(ref balas);
-                    Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones);
+                    AvanzaNave(ch, ref nave);                     // Movimiento de la nave
+                    if (ch == 'x') GeneraBala(ref balas, nave);   // Generación de 1 bala
+                    AvanzaBalas(ref balas);                       // Cada bala avanza
+                    Colisiones(ref tunel, ref nave, ref balas, ref enemigos, ref colisiones); // Colisiones generales
                 }
-                Render(tunel, nave, enemigos, balas, colisiones);
-                Thread.Sleep(100);
-                for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);
+                Render(tunel, nave, enemigos, balas, colisiones); // Renderizado
+                Thread.Sleep(100);                                // Velocidad de juego
+                for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
-            ostPlayer.close();
-            Console.SetCursorPosition(ANCHO / 2, ALTO / 2 - 1 + Convert.ToInt16(DEBUG));
-            Console.BackgroundColor = ConsoleColor.White;
-            Console.ForegroundColor = ConsoleColor.Black;
-            Console.WriteLine("El juego ha finalizado.");
-            while (true) ;
+            ostPlayer.close();                                  // Cierre de la música de fondo
+            Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
+            while (true) ;                                      // Para que no se auto cierre el programa
         }
     }
 }

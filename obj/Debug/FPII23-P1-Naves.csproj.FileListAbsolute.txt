@@ -20,3 +20,13 @@ E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FP
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPLib.dll
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPNSSCI.dll
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.ResolveComReference.cache
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.MediaPlayer.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPDXMLib.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPLauncher.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPLib.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPNSSCI.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.ResolveComReference.cache
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.TCPILib.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMEncoderLib.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMEncPrivateTlb.dll
+C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll
