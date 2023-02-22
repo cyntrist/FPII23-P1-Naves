@@ -3,6 +3,7 @@
 
 using System;
 using System.Media;
+using System.Runtime.InteropServices;
 using System.Threading;
 using WMPLib;
 
@@ -11,9 +12,11 @@ namespace FPII23_P1_Naves
     internal class Program
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
-        static readonly WindowsMediaPlayer ostPlayer = new WindowsMediaPlayer(); // para música de fondo
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
-        const bool DEBUG           = false; // para sacar información adicional en el Render
+        static WindowsMediaPlayer wmPlayer; // para música de fondo
+        const bool DEBUG           = false,
+                   MUSICA          = true,
+                   SONIDOS         = true; // para sacar información adicional en el Render
         const int ANCHO            = 25,
                   ALTO             = 16, // área de juego
                   MAX_BALAS        = 5,
@@ -25,6 +28,7 @@ namespace FPII23_P1_Naves
 
         // Evitar Console.Clear en Windows
         // Errata en ColBalasTunel, se refiere a balas en vez de a nave obvs lol
+        // en vez de usar windows media player usar vlc player creo
 
         #region TIPOS
         struct Tunel
@@ -383,8 +387,25 @@ namespace FPII23_P1_Naves
 
         static void Sonido(SoundPlayer player, string sonido)
         {
-            player.SoundLocation = sonido;
-            player.Play();
+            if (SONIDOS)
+            {
+                player.SoundLocation = sonido;
+                player.Play();
+            }
+        }
+
+        static void Musica(WindowsMediaPlayer player, string URL) // Inicio de la música de fondo
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // Si el OS es Windows
+            {
+                player = new WindowsMediaPlayer { URL = URL };       
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) // Si es Linux
+            {
+                {
+                    // System.Diagnostics.Process.Start("CMD.exe", "papopepo");
+                }
+            } 
         }
 
         static void Mensaje(string mensaje, bool pausa)
@@ -417,7 +438,7 @@ namespace FPII23_P1_Naves
 
             IniciaTunel(out Tunel tunel);
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
-            ostPlayer.URL = @"ost.wav";                       // Inicio de la música de fondo
+            if (MUSICA) Musica(wmPlayer, @"ost.wav");
             while (nave.fil >= 0)                             // Bucle Principal
             {
                 char ch = LeeInput();                           // Lectura de input
@@ -438,7 +459,7 @@ namespace FPII23_P1_Naves
                 Thread.Sleep(100);                                // Velocidad de juego
                 for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
-            ostPlayer.close();                                  // Cierre de la música de fondo
+            if (wmPlayer != null) wmPlayer.close();                                  // Cierre de la música de fondo
             Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
             while (true) ;                                      // Para que no se auto cierre el programa
         }
