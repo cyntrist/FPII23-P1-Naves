@@ -1,9 +1,0 @@
-*.*
-!.gitignore
-!Program.cs
-!bin/Debug/FPII23-P1-Naves.exe
-obj/Debug/FPII23-P1-Naves.pdb
-obj/Debug/FPII23-P1-Naves.exe
-bin/Debug/FPII23-P1-Naves.pdb
-obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
-bin/Debug/FPII23-P1-Naves.pdb
