@@ -30,3 +30,4 @@ C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p
 C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMEncoderLib.dll
 C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMEncPrivateTlb.dll
 C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll
+E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll

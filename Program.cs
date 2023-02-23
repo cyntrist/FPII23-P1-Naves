@@ -259,7 +259,7 @@ namespace FPII23_P1_Naves
                 {
                     int ind = (tunel.ini + ANCHO - 1) % ANCHO; // la anterior a ini es la última renderizada
                     Entidad enemigo; // genera entidad ahí
-                    enemigo.col = ANCHO; // a la derecha del todo
+                    enemigo.col = ANCHO - 1; // a la derecha del todo
                     enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1); // entre techo y suelo
                     AñadeEntidad(enemigo, ref enemigos); // la añade al grupo
                 }
@@ -459,7 +459,7 @@ namespace FPII23_P1_Naves
                 Thread.Sleep(100);                                // Velocidad de juego
                 for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
-            if (wmPlayer != null) wmPlayer.close();                                  // Cierre de la música de fondo
+            wmPlayer.close();                                  // Cierre de la música de fondo
             Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
             while (true) ;                                      // Para que no se auto cierre el programa
         }
