@@ -13,7 +13,7 @@ namespace FPII23_P1_Naves
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
-        static WindowsMediaPlayer wmPlayer; // para música de fondo
+        static WindowsMediaPlayer wmPlayer = new WindowsMediaPlayer(); // para música de fondo
         const bool DEBUG           = false,
                    MUSICA          = true,
                    SONIDOS         = true; // para sacar información adicional en el Render
@@ -23,7 +23,7 @@ namespace FPII23_P1_Naves
                   MAX_ENEMIGOS     = 9;
         const string SHOOT_SOUND   = @"shoot.wav", // localización del sonido de disparo
                      HIT_SOUND     = @"hit.wav",   // " colision
-                     MENSAJE_PAUSA = "Pausa",      // mensaje al estar pausado el juego
+                     MENSAJE_PAUSA = "PAUSA",      // mensaje al estar pausado el juego
                      MENSAJE_FINAL = "El juego ha finalizado."; // mensaje al acabar el juego
 
         // Evitar Console.Clear en Windows
@@ -438,7 +438,8 @@ namespace FPII23_P1_Naves
 
             IniciaTunel(out Tunel tunel);
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
-            if (MUSICA) Musica(wmPlayer, @"ost.wav");
+            //if (MUSICA) Musica(wmPlayer, @"ost.wav");
+            if (MUSICA) wmPlayer.URL = @"ost.wav";
             while (nave.fil >= 0)                             // Bucle Principal
             {
                 char ch = LeeInput();                           // Lectura de input
@@ -459,7 +460,7 @@ namespace FPII23_P1_Naves
                 Thread.Sleep(100);                                // Velocidad de juego
                 for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
-            wmPlayer.close();                                  // Cierre de la música de fondo
+            if (MUSICA) wmPlayer.close();                                   // Cierre de la música de fondo
             Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
             while (true) ;                                      // Para que no se auto cierre el programa
         }
