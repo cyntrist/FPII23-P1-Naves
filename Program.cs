@@ -244,6 +244,7 @@ namespace FPII23_P1_Naves
                 Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
 
+                /*
                 if (colisiones.ent[i].fil <= tunel.techo[(tunel.ini + colisiones.ent[i].col) % ANCHO])
                 {
                     int j = colisiones.ent[i].fil;
@@ -254,6 +255,7 @@ namespace FPII23_P1_Naves
                         j++;
                     }
                 }
+                */
             }
             Console.ResetColor();
         }
