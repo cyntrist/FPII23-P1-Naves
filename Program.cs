@@ -12,8 +12,8 @@ namespace FPII23_P1_Naves
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
-        const bool DEBUG           = false,
-                   MUSICA          = true,
+        const bool DEBUG           = true,
+                   MUSICA          = false,
                    SONIDOS         = true; // para sacar información adicional en el Render
         const int ANCHO            = 25,
                   ALTO             = 16,   // área de juego
@@ -201,9 +201,9 @@ namespace FPII23_P1_Naves
             RenderTunel(tunel);
             if (DEBUG)
             {
-                Console.WriteLine("nave.col: " + nave.col + ", nave.fil: " + nave.fil + "  ");
-                Console.Write("enemigos.col: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].col + "  ");
-                Console.Write("\nenemigos.fil: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].fil + "  ");
+                Console.WriteLine("nave.col: " + nave.col + ", nave.fil: " + nave.fil + "   ");
+                Console.Write("enemigos.col: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].col + "   ");
+                Console.Write("\nenemigos.fil: "); for (int i = 0; i < enemigos.num; i++) Console.Write(enemigos.ent[i].fil + "   ");
                 Console.WriteLine("\nenemigos.num: " + enemigos.num);
                 Console.WriteLine("balas.num: " + balas.num);
             }
@@ -222,11 +222,8 @@ namespace FPII23_P1_Naves
             Console.ForegroundColor = ConsoleColor.Yellow;
             for (int i = 0; i < enemigos.num; i++)
             {
-                if (enemigos.ent[i].col >= 0)
-                {
-                    Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil + Convert.ToInt16(DEBUG));
-                    Console.Write("<>");
-                }
+                Console.SetCursorPosition(enemigos.ent[i].col * 2, enemigos.ent[i].fil + Convert.ToInt16(DEBUG));
+                Console.Write("<>");
             }
 
             // BALAS
@@ -244,7 +241,7 @@ namespace FPII23_P1_Naves
                 Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
 
-                /*
+                /* // ÚLTIMA EXTENSIÓN: lo único que queda por hacer
                 if (colisiones.ent[i].fil <= tunel.techo[(tunel.ini + colisiones.ent[i].col) % ANCHO])
                 {
                     int j = colisiones.ent[i].fil;
@@ -283,9 +280,9 @@ namespace FPII23_P1_Naves
         {
             for (int i = 0; i < enemigos.num; i++)
             {
-                enemigos.ent[i].col--; // mov hacia la izq
-                if (enemigos.ent[i].col < 0) // si se sale, eliminalo
+                if (enemigos.ent[i].col <= 0) // si se sale, eliminalo
                     EliminaEntidad(i, ref enemigos);
+                enemigos.ent[i].col--; // mov hacia la izq
             }
         }
 
@@ -305,9 +302,9 @@ namespace FPII23_P1_Naves
         {
             for (int i = 0; i < balas.num; i++)
             {
-                balas.ent[i].col++;
-                if (balas.ent[i].col >= ANCHO)
+                if (balas.ent[i].col >= ANCHO - 1)
                     EliminaEntidad(i, ref balas);
+                balas.ent[i].col++;
             }
         }
 
