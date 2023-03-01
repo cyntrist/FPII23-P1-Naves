@@ -3,9 +3,8 @@
 
 using System;
 using System.Media;
-using System.Runtime.InteropServices;
 using System.Threading;
-using WMPLib;
+using System.Diagnostics;
 
 namespace FPII23_P1_Naves
 {
@@ -13,16 +12,17 @@ namespace FPII23_P1_Naves
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
-        static WindowsMediaPlayer wmPlayer = new WindowsMediaPlayer(); // para música de fondo
         const bool DEBUG           = false,
                    MUSICA          = true,
                    SONIDOS         = true; // para sacar información adicional en el Render
         const int ANCHO            = 25,
-                  ALTO             = 16, // área de juego
+                  ALTO             = 16,   // área de juego
                   MAX_BALAS        = 5,
                   MAX_ENEMIGOS     = 9;
-        const string SHOOT_SOUND   = @"shoot.wav", // localización del sonido de disparo
-                     HIT_SOUND     = @"hit.wav",   // " colision
+        const string VLCPLAYER     = @"vlc.exe",   // ruta de vlcplayer
+                     MUSIC_TRACK   = @"ost.wav",   // " música de fondo
+                     SHOOT_SOUND   = @"shoot.wav", // " sonido de disparo
+                     HIT_SOUND     = @"hit.wav",   // " sonido de colision
                      MENSAJE_PAUSA = "PAUSA",      // mensaje al estar pausado el juego
                      MENSAJE_FINAL = "El juego ha finalizado."; // mensaje al acabar el juego
 
@@ -243,6 +243,17 @@ namespace FPII23_P1_Naves
             {
                 Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
+
+                if (colisiones.ent[i].fil <= tunel.techo[(tunel.ini + colisiones.ent[i].col) % ANCHO])
+                {
+                    int j = colisiones.ent[i].fil;
+                    while (j <= tunel.techo[tunel.ini + colisiones.ent[i].col])
+                    {
+                        Console.SetCursorPosition(colisiones.ent[i].col * 2, j + Convert.ToInt16(DEBUG));
+                        Console.Write("**");
+                        j++;
+                    }
+                }
             }
             Console.ResetColor();
         }
@@ -394,20 +405,6 @@ namespace FPII23_P1_Naves
             }
         }
 
-        static void Musica(WindowsMediaPlayer player, string URL) // Inicio de la música de fondo
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // Si el OS es Windows
-            {
-                player = new WindowsMediaPlayer { URL = URL };       
-            }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) // Si es Linux
-            {
-                {
-                    // System.Diagnostics.Process.Start("CMD.exe", "papopepo");
-                }
-            } 
-        }
-
         static void Mensaje(string mensaje, bool pausa)
         {
             Console.SetCursorPosition(ANCHO / 2 * 2 - mensaje.Length / 2, ALTO / 2 - 1 + Convert.ToInt16(DEBUG));
@@ -436,10 +433,11 @@ namespace FPII23_P1_Naves
             colisiones.ent = new Entidad[ANCHO * ALTO]; // Cantidad de casillas posibles con colisión (?)
             colisiones.num = 0;
 
+            Process p; // Declaración del proceso para la música de fondo
+
             IniciaTunel(out Tunel tunel);
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
-            //if (MUSICA) Musica(wmPlayer, @"ost.wav");
-            if (MUSICA) wmPlayer.URL = @"ost.wav";
+            if (MUSICA) p = Process.Start(VLCPLAYER, "--qt-start-minimized --loop " + MUSIC_TRACK);
             while (nave.fil >= 0)                             // Bucle Principal
             {
                 char ch = LeeInput();                           // Lectura de input
@@ -460,7 +458,7 @@ namespace FPII23_P1_Naves
                 Thread.Sleep(100);                                // Velocidad de juego
                 for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
-            if (MUSICA) wmPlayer.close();                                   // Cierre de la música de fondo
+            if (MUSICA) p?.Kill();
             Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
             while (true) ;                                      // Para que no se auto cierre el programa
         }
