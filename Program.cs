@@ -14,7 +14,7 @@ namespace FPII23_P1_Naves
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
         const bool DEBUG           = false,
-                   MUSICA          = true,
+                   MUSICA          = false,
                    SONIDOS         = true; // para sacar información adicional en el Render
         const int ANCHO            = 25,
                   ALTO             = 16,   // área de juego
@@ -392,6 +392,7 @@ namespace FPII23_P1_Naves
             Console.BackgroundColor = ConsoleColor.White;
             Console.ForegroundColor = ConsoleColor.Black;
             Console.WriteLine(mensaje);
+            Console.ResetColor();
             if (pausa) Console.ReadKey(); // manera sencilla de hacer una pausa
         }
 
@@ -486,6 +487,12 @@ namespace FPII23_P1_Naves
 
             Process p; // Declaración del proceso para la música de fondo
             if (MUSICA) p = Process.Start(VLCPLAYER, "--qt-start-minimized --loop " + MUSIC_TRACK);
+            if (!DEBUG)
+            {
+                
+                Console.SetWindowSize(ANCHO * 2, ALTO);
+                //Console.SetBufferSize(ANCHO * 2, ALTO + 1);
+            }
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
             while (nave.fil >= 0)                             // Bucle Principal
             {
