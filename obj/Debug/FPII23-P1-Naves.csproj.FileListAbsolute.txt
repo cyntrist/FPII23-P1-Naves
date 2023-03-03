@@ -31,3 +31,18 @@ C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p
 C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMEncPrivateTlb.dll
 C:\Users\Usuario\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll
 E:\Programas\OneDrive - Universidad Complutense de Madrid (UCM)\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.exe.config
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.exe
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\bin\Debug\FPII23-P1-Naves.pdb
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.AssemblyReference.cache
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.SuggestedBindingRedirects.cache
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.MediaPlayer.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMLSS.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPDXMLib.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPLauncher.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPLib.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\Interop.WMPNSSCI.dll
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.ResolveComReference.cache
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.csproj.CoreCompileInputs.cache
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.exe
+E:\Programas\OneDrive - UCM\UCM\S2\fp2\p1\FPII23-P1-Naves\FPII23-P1-Naves\obj\Debug\FPII23-P1-Naves.pdb
