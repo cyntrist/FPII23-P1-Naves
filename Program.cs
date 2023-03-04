@@ -15,7 +15,7 @@ namespace FPII23_P1_Naves
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
         const bool DEBUG           = false,
                    MUSICA          = false,
-                   SONIDOS         = true; // para sacar información adicional en el Render
+                   SONIDOS         = false; // para sacar información adicional en el Render
         const int ANCHO            = 25,
                   ALTO             = 16,   // área de juego
                   MAX_BALAS        = 5,
@@ -191,19 +191,6 @@ namespace FPII23_P1_Naves
             {
                 Console.SetCursorPosition(colisiones.ent[i].col * 2, colisiones.ent[i].fil + Convert.ToInt16(DEBUG));
                 Console.Write("**");
-
-                /* // ÚLTIMA EXTENSIÓN: lo único que queda por hacer
-                if (colisiones.ent[i].fil <= tunel.techo[(tunel.ini + colisiones.ent[i].col) % ANCHO])
-                {
-                    int j = colisiones.ent[i].fil;
-                    while (j <= tunel.techo[tunel.ini + colisiones.ent[i].col])
-                    {
-                        Console.SetCursorPosition(colisiones.ent[i].col * 2, j + Convert.ToInt16(DEBUG));
-                        Console.Write("**");
-                        j++;
-                    }
-                }
-                */
             }
             Console.ResetColor();
             Console.SetCursorPosition(0, 0);
@@ -251,7 +238,7 @@ namespace FPII23_P1_Naves
             if (enemigos.num < MAX_ENEMIGOS)
             {
                 int chance;
-                if (DEBUG) chance = 0; // siempre genera si estamos en debug
+                if (DEBUG) chance = 1; // siempre genera si estamos en debug
                 else chance = rnd.Next(0, 4); // 1 entre 4
 
                 if (chance == 0) // 25% chance
@@ -259,7 +246,7 @@ namespace FPII23_P1_Naves
                     int ind = (tunel.ini + ANCHO - 1) % ANCHO; // la anterior a ini es la última renderizada
                     Entidad enemigo; // genera entidad ahí
                     enemigo.col = ANCHO; // a la derecha del todo
-                    enemigo.fil = rnd.Next(tunel.techo[ind] + 2, tunel.suelo[ind] - 1); // entre techo y suelo
+                    enemigo.fil = rnd.Next(tunel.techo[ind] + 1, tunel.suelo[ind] - 1); // entre techo y suelo
                     AñadeEntidad(enemigo, ref enemigos); // la añade al grupo
                 }
             }
@@ -319,9 +306,17 @@ namespace FPII23_P1_Naves
                 if (balas.ent[i].fil <= tunel.techo[ind] || balas.ent[i].fil >= tunel.suelo[ind])
                 {                                             // Si está en techo o en suelo
                     if (balas.ent[i].fil <= tunel.techo[ind]) // Si está en techo
+                    {
+                        int j = balas.ent[i].fil + 1;
+                        while (j <= tunel.techo[ind]) EfectoRoto(i, ref j, 1, balas, ref colisiones); // EXTENSION 2
                         tunel.techo[ind] = balas.ent[i].fil - 1; // todo lo de abajo a eso se rompe también
+                    }
                     else                                      // Si no está en techo, está en suelo
+                    {
+                        int j = balas.ent[i].fil - 1;
+                        while (j >= tunel.suelo[ind]) EfectoRoto(i, ref j, -1, balas, ref colisiones); // EXTENSION 2
                         tunel.suelo[ind] = balas.ent[i].fil + 1; // suelo = fila de la bala
+                    }
                     Entidad colision;
                     colision.fil = balas.ent[i].fil;
                     colision.col = balas.ent[i].col;
@@ -377,6 +372,15 @@ namespace FPII23_P1_Naves
             ColBalasEnemigos(ref balas, ref enemigos, ref colisiones);
         }
 
+        static void EfectoRoto(int i, ref int j, int sentido, GrEntidades balas, ref GrEntidades colisiones) // EXTENSIÓN 2
+        {
+            Entidad efecto;
+            efecto.col = balas.ent[i].col;
+            efecto.fil = j;
+            j += sentido;
+            AñadeEntidad(efecto, ref colisiones);
+        }
+
         static void Sonido(SoundPlayer player, string sonido)
         {
             if (SONIDOS)
@@ -399,7 +403,6 @@ namespace FPII23_P1_Naves
         static void Salvar(string file, Tunel tunel, Entidad nave, GrEntidades enemigos, GrEntidades balas)
         { // INVARIANTES: el archivo tendrá las mismas constantes, por lo que el tunel mide lo mismo de ancho y alto (y lo mismo con el max de balas y enemigos)
             StreamWriter sw = new StreamWriter(file);
-
             sw.WriteLine(nave.fil); // NAVE
             sw.WriteLine(nave.col);
 
@@ -422,15 +425,13 @@ namespace FPII23_P1_Naves
                 sw.WriteLine(balas.ent[i].col);
             }
             sw.WriteLine(balas.num);
-            
             sw.Flush(); 
             sw.Close();
         }
 
         static void Restaurar(string file, out Tunel tunel, out Entidad nave, out GrEntidades enemigos, out GrEntidades balas)
-        {
+        { // INVARIANTES: el archivo tendrá las mismas constantes, por lo que el tunel mide lo mismo de ancho y alto (y lo mismo con el max de balas y enemigos)
             StreamReader sr = new StreamReader(file);
-
             tunel.suelo = new int[ANCHO];
             tunel.techo = new int[ANCHO];
             enemigos.ent = new Entidad[MAX_ENEMIGOS];
@@ -440,9 +441,9 @@ namespace FPII23_P1_Naves
             nave.col = int.Parse(sr.ReadLine());
 
             for (int i = 0; i < ANCHO; i++) // TUNEL
-                tunel.techo[i] = int.Parse(sr.ReadLine()); // techo
+                tunel.techo[i] = int.Parse(sr.ReadLine()); 
             for (int i = 0; i < ANCHO; i++)
-                tunel.suelo[i]= int.Parse(sr.ReadLine()); // suelo
+                tunel.suelo[i]= int.Parse(sr.ReadLine()); 
             tunel.ini = int.Parse(sr.ReadLine());
 
             for (int i = 0; i < MAX_ENEMIGOS; i++) // ENEMIGOS
@@ -468,7 +469,7 @@ namespace FPII23_P1_Naves
             Entidad nave;                                   
             GrEntidades enemigos;
             GrEntidades balas;
-            GrEntidades colisiones;
+            GrEntidades colisiones; // las colisiones siempre son nuevas al ejecutar el juego
             colisiones.ent = new Entidad[ANCHO * ALTO]; // Cantidad de casillas posibles con colisión (?)
             colisiones.num = 0;
 
@@ -487,12 +488,7 @@ namespace FPII23_P1_Naves
 
             Process p; // Declaración del proceso para la música de fondo
             if (MUSICA) p = Process.Start(VLCPLAYER, "--qt-start-minimized --loop " + MUSIC_TRACK);
-            if (!DEBUG)
-            {
-                
-                Console.SetWindowSize(ANCHO * 2, ALTO);
-                //Console.SetBufferSize(ANCHO * 2, ALTO + 1);
-            }
+            if (!DEBUG) Console.SetWindowSize(ANCHO * 2, ALTO);
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
             while (nave.fil >= 0)                             // Bucle Principal
             {
