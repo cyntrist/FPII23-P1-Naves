@@ -13,9 +13,9 @@ namespace FPII23_P1_Naves
     {
         static readonly Random rnd = new Random(); // un único generador de aleaotorios para todo el programa
         static readonly SoundPlayer sfxPlayer = new SoundPlayer(); // para efectos de sonido: disparo y colision
-        const bool DEBUG           = false,
-                   MUSICA          = false,
-                   SONIDOS         = false; // para sacar información adicional en el Render
+        const bool DEBUG           = true,
+                   MUSICA          = true,
+                   SONIDOS         = true; // para sacar información adicional en el Render
         const int ANCHO            = 25,
                   ALTO             = 16,   // área de juego
                   MAX_BALAS        = 5,
@@ -238,7 +238,7 @@ namespace FPII23_P1_Naves
             if (enemigos.num < MAX_ENEMIGOS)
             {
                 int chance;
-                if (DEBUG) chance = 1; // siempre genera si estamos en debug
+                if (DEBUG) chance = 0; // siempre genera si estamos en debug
                 else chance = rnd.Next(0, 4); // 1 entre 4
 
                 if (chance == 0) // 25% chance
@@ -488,7 +488,7 @@ namespace FPII23_P1_Naves
 
             Process p; // Declaración del proceso para la música de fondo
             if (MUSICA) p = Process.Start(VLCPLAYER, "--qt-start-minimized --loop " + MUSIC_TRACK);
-            if (!DEBUG) Console.SetWindowSize(ANCHO * 2, ALTO);
+            //if (!DEBUG) Console.SetWindowSize(ANCHO * 2, ALTO);
             Render(tunel, nave, enemigos, balas, colisiones); // Render inicial
             while (nave.fil >= 0)                             // Bucle Principal
             {
@@ -515,7 +515,7 @@ namespace FPII23_P1_Naves
                 for (int i = 0; i < colisiones.num; i++) EliminaEntidad(i, ref colisiones);   // Limpieza de colisiones
             }
             Mensaje(MENSAJE_FINAL, false);                      // Mensaje final
-            if (MUSICA) p?.Kill();                              // Fin de la música si el proceso de ésta no es nulo 
+            if (MUSICA && Process.GetProcessesByName("vlc").Length > 0) p?.Kill();                              // Fin de la música si el proceso de ésta no es nulo 
             while (true) ;                                      // Para que no se auto cierre el programa
         }
     }
